@@ -8,24 +8,26 @@ PORTS = range(4)
 
 
 def _indent(s):
-    return re.sub(r'^', '    ', s, flags=re.MULTILINE)
+    return re.sub(r"^", "    ", s, flags=re.MULTILINE)
 
 
 def _format_collection(coll, delim_open, delim_close):
     elements = [_format(x) for x in coll]
-    if elements and '\n' in elements[0]:
-        return delim_open + '\n' + ',\n'.join(_indent(e) for e in elements) + delim_close
+    if elements and "\n" in elements[0]:
+        return (
+            delim_open + "\n" + ",\n".join(_indent(e) for e in elements) + delim_close
+        )
     else:
-        return delim_open + ', '.join(elements) + delim_close
+        return delim_open + ", ".join(elements) + delim_close
 
 
 def _format(obj):
     if isinstance(obj, float):
-        return '%.02f' % obj
+        return "%.02f" % obj
     elif isinstance(obj, tuple):
-        return _format_collection(obj, '(', ')')
+        return _format_collection(obj, "(", ")")
     elif isinstance(obj, list):
-        return _format_collection(obj, '[', ']')
+        return _format_collection(obj, "[", "]")
     elif isinstance(obj, enum.Enum):
         return repr(obj)
     else:
@@ -36,12 +38,12 @@ def try_enum(enum, val):
     try:
         return enum(val)
     except ValueError:
-        log.info('unknown %s: %s' % (enum.__name__, val))
+        log.info("unknown %s: %s" % (enum.__name__, val))
         return val
 
 
 def unpack(fmt, stream):
-    fmt = '>' + fmt
+    fmt = ">" + fmt
     size = struct.calcsize(fmt)
     bytes = stream.read(size)
     if not bytes:
@@ -52,47 +54,50 @@ def unpack(fmt, stream):
 def expect_bytes(expected_bytes, stream):
     read_bytes = stream.read(len(expected_bytes))
     if read_bytes != expected_bytes:
-        raise Exception(f'expected {expected_bytes}, but got: {read_bytes}')
+        raise Exception(f"expected {expected_bytes}, but got: {read_bytes}")
 
 
 class Base:
     __slots__: Tuple = ()
 
     def _attr_repr(self, attr):
-        return attr + '=' + _format(getattr(self, attr))
+        return attr + "=" + _format(getattr(self, attr))
 
     def __repr__(self):
         attrs = []
         for attr in dir(self):
             # uppercase names are nested classes
-            if not (attr.startswith('_') or attr[0].isupper()):
+            if not (attr.startswith("_") or attr[0].isupper()):
                 s = self._attr_repr(attr)
                 if s:
                     attrs.append(_indent(s))
 
-        return '%s(\n%s)' % (self.__class__.__name__, ',\n'.join(attrs))
+        return "%s(\n%s)" % (self.__class__.__name__, ",\n".join(attrs))
 
 
 class Enum(enum.Enum):
     def __repr__(self):
-        return '%r:%s' % (self._value_, self._name_)
+        return "%r:%s" % (self._value_, self._name_)
 
 
 class IntEnum(enum.IntEnum):
     def __repr__(self):
-        return '%d:%s' % (self._value_, self._name_)
+        return "%d:%s" % (self._value_, self._name_)
 
     @classmethod
     def _missing_(cls, value):
-        val_desc = f'0x{value:x}' if isinstance(value, int) else f'{value}'
-        raise ValueError(f'{val_desc} is not a valid {cls.__name__}') from None
+        val_desc = f"0x{value:x}" if isinstance(value, int) else f"{value}"
+        raise ValueError(f"{val_desc} is not a valid {cls.__name__}") from None
 
 
 class IntFlag(enum.IntFlag):
     def __repr__(self):
-        members = (name for name, val in self.__class__.__members__.items() if self & val)
-        return '%s:%s' % (bin(self._value_), '|'.join(members))
+        members = (
+            name for name, val in self.__class__.__members__.items() if self & val
+        )
+        return "%s:%s" % (bin(self._value_), "|".join(members))
+
 
 class EOFError(IOError):
     def __init__(self):
-        super().__init__('unexpected end of file')
+        super().__init__("unexpected end of file")

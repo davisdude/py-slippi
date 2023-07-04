@@ -7,41 +7,42 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
+
+sys.path.insert(0, os.path.abspath(".."))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'py-slippi'
-author = 'melkor'
+project = "py-slippi"
+author = "melkor"
 
-version = '1.6.2'
-release = '1.6.2'
+version = "1.6.2"
+release = "1.6.2"
 
 
 # -- General configuration ---------------------------------------------------
 
-extensions = ['sphinx.ext.autodoc', 'sphinx_autodoc_typehints']
-templates_path = ['_templates']
-source_suffix = ['.rst']
-master_doc = 'index'
-exclude_patterns = ['_build']
-pygments_style = 'sphinx'
+extensions = ["sphinx.ext.autodoc", "sphinx_autodoc_typehints"]
+templates_path = ["_templates"]
+source_suffix = [".rst"]
+master_doc = "index"
+exclude_patterns = ["_build"]
+pygments_style = "sphinx"
 
 
 # -- Options for HTML output -------------------------------------------------
 
-html_theme = 'alabaster'
+html_theme = "alabaster"
 
 html_theme_options = {
-    'description': 'Python parser for SSBM replay files',
-    'fixed_sidebar': True,
-    'github_button': True,
-    'github_repo': "py-slippi",
-    'github_user': "hohav",
+    "description": "Python parser for SSBM replay files",
+    "fixed_sidebar": True,
+    "github_button": True,
+    "github_repo": "py-slippi",
+    "github_user": "hohav",
 }
 
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 html_sidebars = {
     "**": [
@@ -57,20 +58,24 @@ html_sidebars = {
 
 from sphinx.ext.autodoc import ClassLevelDocumenter, InstanceAttributeDocumenter
 
-autodoc_member_order = 'bysource'
+autodoc_member_order = "bysource"
+
 
 def skip(app, what, name, obj, skip, options):
-    if name == '__init__' and obj.__doc__:
+    if name == "__init__" and obj.__doc__:
         return False
     return skip
 
+
 def setup(app):
     app.connect("autodoc-skip-member", skip)
-    app.add_stylesheet('custom.css')
-    app.add_javascript('custom.js')
+    app.add_stylesheet("custom.css")
+    app.add_javascript("custom.js")
+
 
 # remove the useless " = None" after every ivar
 def iad_add_directive_header(self, sig):
     ClassLevelDocumenter.add_directive_header(self, sig)
+
 
 InstanceAttributeDocumenter.add_directive_header = iad_add_directive_header
