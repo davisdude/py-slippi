@@ -224,7 +224,7 @@ class Start(Base):
 class Gecko(Base):
     """Gecko code that should be applied to the replay."""
 
-    b: Gecko.b #: `added(3.3.0)` Bytes of gecko code
+    b: bytes #: `added(3.3.0)` Bytes of gecko code
 
     def __init__(self, b: bytes):
         self.b = b
