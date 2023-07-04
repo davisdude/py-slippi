@@ -46,6 +46,18 @@ class Game(Base):
             skip_frames,
         )
 
+    def __eq__(self, other):
+        return all(
+            [
+                self.start == other.start,
+                self.gecko == other.gecko,
+                self.frames == other.frames,
+                self.end == other.end,
+                self.metadata == other.metadata,
+                self.metadata_raw == other.metadata_raw,
+            ]
+        )
+
     def _add_frame(self, f):
         idx = f.index - FIRST_FRAME_INDEX
         count = len(self.frames)

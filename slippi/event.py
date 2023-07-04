@@ -389,6 +389,17 @@ class Frame(Base):
         self.start = None
         self.end = None
 
+    def __eq__(self, other):
+        return all(
+            [
+                self.index == other.index,
+                self.ports == other.ports,
+                self.items == other.items,
+                self.start == other.start,
+                self.end == other.end,
+            ]
+        )
+
     def _finalize(self):
         self.ports = tuple(self.ports)
         self.items = tuple(self.items)
@@ -407,6 +418,14 @@ class Frame(Base):
             self.leader = self.Data()
             self.follower = None
 
+        def __eq__(self, other):
+            return all(
+                [
+                    self.leader == other.leader,
+                    self.follower == other.follower,
+                ]
+            )
+
         class Data(Base):
             """Frame data for a given character. Includes both pre-frame and post-frame data."""
 
@@ -415,6 +434,14 @@ class Frame(Base):
             def __init__(self):
                 self._pre = None
                 self._post = None
+
+            def __eq__(self, other):
+                return all(
+                    [
+                        self.pre == other.pre,
+                        self.post == other.post,
+                    ]
+                )
 
             @property
             def pre(self) -> Optional[Frame.Port.Data.Pre]:
@@ -483,6 +510,22 @@ class Frame(Base):
                     self.raw_analog_x = raw_analog_x  #: int | None: `added(1.2.0)` Raw x analog controller input (for UCF)
                     self.damage = (
                         damage  #: float | None: `added(1.4.0)` Current damage percent
+                    )
+
+                def __eq__(self, other):
+                    return all(
+                        [
+                            self.state == other.state,
+                            self.position == other.position,
+                            self.direction == other.direction,
+                            self.joystick == other.joystick,
+                            self.cstick == other.cstick,
+                            self.triggers == other.triggers,
+                            self.buttons == other.buttons,
+                            self.random_seed == other.random_seed,
+                            self.raw_analog_x == other.raw_analog_x,
+                            self.damage == other.damage,
+                        ]
                     )
 
                 @classmethod
@@ -621,6 +664,29 @@ class Frame(Base):
                     self.ground = ground
                     self.jumps = jumps
                     self.l_cancel = l_cancel
+
+                def __eq__(self, other):
+                    return all(
+                        [
+                            self.character == other.character,
+                            self.state == other.state,
+                            self.position == other.position,
+                            self.direction == other.direction,
+                            self.damage == other.damage,
+                            self.shield == other.shield,
+                            self.stocks == other.stocks,
+                            self.last_attack_landed == other.last_attack_landed,
+                            self.last_hit_by == other.last_hit_by,
+                            self.combo_count == other.combo_count,
+                            self.state_age == other.state_age,
+                            self.flags == other.flags,
+                            self.hit_stun == other.hit_stun,
+                            self.airborne == other.airborne,
+                            self.ground == other.ground,
+                            self.jumps == other.jumps,
+                            self.l_cancel == other.l_cancel,
+                        ]
+                    )
 
                 @classmethod
                 def _parse(cls, stream):
