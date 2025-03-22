@@ -215,7 +215,7 @@ def _parse(stream, handlers, skip_frames):
 
     expect_bytes(b"U\x08metadata", stream)
 
-    json = ubjson.load(stream)
+    json = ubjson.load(stream, errors='ignore')
     raw_handler = handlers.get(ParseEvent.METADATA_RAW)
     if raw_handler:
         raw_handler(json)
