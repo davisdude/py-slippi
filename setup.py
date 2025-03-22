@@ -12,7 +12,10 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     description="Parsing library for SSBM replay files",
-    install_requires=["py-ubjson", "termcolor"],
+    install_requires=[
+        "py-ubjson @ git+https://github.com/davisdude/py-ubjson@invalid-utf8",
+        "termcolor"
+    ],
     long_description=long_description,
     long_description_content_type="text/x-rst",
     name="py-slippi",
